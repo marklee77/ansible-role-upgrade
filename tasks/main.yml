@@ -1,8 +1,8 @@
 ---
 - name: upgrade software packages to latest version
-  apt: 
+  apt:
     update_cache: yes
-    upgrade: dist 
+    upgrade: dist
 
 - name: autoremove unneeded packages
   command: apt-get -y autoremove
@@ -29,7 +29,7 @@
     owner: root
     group: root
     mode: 0644
- 
+
 - name: update /etc/apt/apt.conf.d/50unattended-updates from template
   template:
     src: etc/apt/apt.conf.d/50unattended-upgrades
@@ -54,13 +54,12 @@
   when: upgrade_enable_reboot_on_kernel_change and installed_kernel.stdout != running_kernel.stdout
 
 - name: wait for reboot
-  sudo: False
+  become: false
   delegate_to: localhost
-  wait_for: 
-    host: "{{ ansible_ssh_host|default(inventory_hostname) }}" 
+  wait_for:
+    host: "{{ ansible_ssh_host|default(inventory_hostname) }}"
     port: "{{ ansible_ssh_port|default(22) }}"
-    delay: 30 
+    delay: 30
     timeout: 600
     state: started
   when: reboot_result|changed
-

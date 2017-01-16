@@ -1,5 +1,5 @@
 ---
 - hosts: all
-  sudo: True
+  become: true
   roles:
     - marklee77.upgrade
