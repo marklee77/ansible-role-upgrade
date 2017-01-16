@@ -1,42 +1,30 @@
 ---
-- name: upgrade software packages to latest version
-  apt:
-    update_cache: yes
-    upgrade: dist
-
-- name: autoremove unneeded packages
-  command: apt-get -y autoremove
-  register: aptget_autoremove
-  changed_when: aptget_autoremove.stdout.find("REMOVE") != -1
-
-- name: autoclean archived packages
-  command: apt-get -y autoclean
-  changed_when: false
-
 - name: ensure unattended-upgrades package is installed
   apt:
-    pkg: "{{ item }}"
+    name: "{{ item }}"
     state: latest
     update_cache: yes
     cache_valid_time: 600
   with_items:
     - unattended-upgrades
 
-- name: update /etc/apt/apt.conf.d/20auto-updates from template
+- name: update apt configuration from templates
   template:
-    src: etc/apt/apt.conf.d/20auto-upgrades
-    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    src: etc/apt/apt.conf.d/{{ item }}
+    dest: /etc/apt/apt.conf.d/{{ item }}
     owner: root
     group: root
     mode: 0644
+  with_items:
+    - 20auto-upgrades
+    - 50unattended-upgrades
 
-- name: update /etc/apt/apt.conf.d/50unattended-updates from template
-  template:
-    src: etc/apt/apt.conf.d/50unattended-upgrades
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    owner: root
-    group: root
-    mode: 0644
+- name: upgrade software packages to latest version
+  apt:
+    upgrade: dist
+    autoremove: yes
+    update_cache: yes
+    cache_valid_time: 600
 
 - name: register running kernel version
   command: uname -r
