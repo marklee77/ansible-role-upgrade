@@ -38,6 +38,9 @@
 
 - name: reboot if kernel version has changed
   command: /sbin/reboot
+  async: 0
+  poll: 0
+  ignore_errors: true
   register: reboot_result
   when: upgrade_enable_reboot_on_kernel_change and installed_kernel.stdout != running_kernel.stdout
 
@@ -45,8 +48,8 @@
   become: false
   delegate_to: localhost
   wait_for:
-    host: "{{ ansible_ssh_host|default(inventory_hostname) }}"
-    port: "{{ ansible_ssh_port|default(22) }}"
+    host: "{{ ansible_host|default(inventory_hostname) }}"
+    port: "{{ ansible_port|default(22) }}"
     delay: 30
     timeout: 600
     state: started
