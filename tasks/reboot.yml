@@ -1,6 +1,6 @@
 ---
 - name: reboot the machine
-  command: /sbin/reboot
+  shell: sleep 5 && /sbin/reboot
   async: 1
   poll: 0
   ignore_errors: yes
@@ -9,8 +9,8 @@
   become: false
   delegate_to: localhost
   wait_for:
-    host: "{{ ansible_host|default(inventory_hostname) }}"
-    port: "{{ ansible_port|default(22) }}"
+    host: "{{ ansible_host|default(ansible_ssh_host|default(inventory_hostname)) }}"
+    port: "{{ ansible_port|default(ansible_ssh_port|default(22)) }}"
     delay: 30
     timeout: 600
     state: started
