@@ -1,7 +1,7 @@
 ---
 - name: reboot the machine
   command: /sbin/reboot
-  async: 0
+  async: 1
   poll: 0
   ignore_errors: yes
 
