@@ -3,14 +3,13 @@ marklee77.upgrade
 
 Role to manage upgrades for Ubuntu.
 
-This role can reboot the system, so cannot be tested on travis.
-
 Example Playbook
 -------------------------
 
     - hosts: all
+      become: true
       roles:
-        - marklee77.upgrade
+        - upgrade
 
 License
 -------
